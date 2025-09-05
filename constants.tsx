@@ -6,8 +6,8 @@ export const ZEKKEN_LOGO = (
       <path d="M13 12L27 12L18 21L27 21L13 28L22 19L13 19L13 12Z" fill="white" fillOpacity="0.9"/>
       <defs>
         <linearGradient id="logo-gradient" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#DC2626"/>
-          <stop offset="1" stopColor="#B91C1C"/>
+          <stop stopColor="#5eead4"/>
+          <stop offset="1" stopColor="#06b6d4"/>
         </linearGradient>
       </defs>
     </svg>

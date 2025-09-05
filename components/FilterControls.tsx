@@ -15,9 +15,9 @@ export const FilterControls: React.FC<FilterControlsProps> = ({ cabTypes, active
         <button
           key={filter}
           onClick={() => onFilterChange(filter)}
-          className={`px-4 py-2 text-sm font-semibold rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black focus:ring-red-500 ${
+          className={`px-4 py-2 text-sm font-semibold rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black focus:ring-cyan-500 ${
             activeFilter === filter
-              ? 'bg-red-600 text-white shadow-md'
+              ? 'bg-cyan-600 text-white shadow-md'
               : 'bg-zinc-700 text-zinc-300 hover:bg-zinc-600 hover:text-white'
           }`}
           aria-pressed={activeFilter === filter}

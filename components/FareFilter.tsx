@@ -24,7 +24,7 @@ export const FareFilter: React.FC<FareFilterProps> = ({ min, max, currentMin, cu
       <div>
         <div className="flex justify-between text-sm mb-1">
           <label htmlFor="min-fare" className="text-zinc-400" title="Set the minimum price for the cab fare.">Min Fare</label>
-          <span className="font-semibold text-red-300">₹{currentMin}</span>
+          <span className="font-semibold text-cyan-300">₹{currentMin}</span>
         </div>
         <input
           id="min-fare"
@@ -33,14 +33,14 @@ export const FareFilter: React.FC<FareFilterProps> = ({ min, max, currentMin, cu
           max={max}
           value={currentMin}
           onChange={handleMinChange}
-          className="w-full h-2 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-red-600"
+          className="w-full h-2 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-cyan-600"
           aria-label="Minimum fare"
         />
       </div>
       <div>
         <div className="flex justify-between text-sm mb-1">
           <label htmlFor="max-fare" className="text-zinc-400" title="Set the maximum price for the cab fare.">Max Fare</label>
-          <span className="font-semibold text-red-300">₹{currentMax}</span>
+          <span className="font-semibold text-cyan-300">₹{currentMax}</span>
         </div>
         <input
           id="max-fare"
@@ -49,7 +49,7 @@ export const FareFilter: React.FC<FareFilterProps> = ({ min, max, currentMin, cu
           max={max}
           value={currentMax}
           onChange={handleMaxChange}
-          className="w-full h-2 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-red-600"
+          className="w-full h-2 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-cyan-600"
           aria-label="Maximum fare"
         />
       </div>

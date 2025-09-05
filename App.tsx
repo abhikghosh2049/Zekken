@@ -8,12 +8,15 @@ import { SortControls } from './components/SortControls';
 import { RecentSearches } from './components/RecentSearches';
 import { fetchCabOptions } from './services/geminiService';
 import type { CabOption, SearchParams, Coordinates, BookmarkedLocation } from './types';
+import { Loader } from './components/Loader';
 
 type SortOrder = 'fare-asc' | 'fare-desc';
 
 const MAX_RECENT_SEARCHES = 5;
 const RECENT_SEARCHES_STORAGE_KEY = 'zekkenRecentSearches';
 const BOOKMARKS_STORAGE_KEY = 'zekkenBookmarkedLocations';
+const PREFERRED_CAB_TYPE_STORAGE_KEY = 'zekkenPreferredCabType';
+
 
 const App: React.FC = () => {
   const [cabOptions, setCabOptions] = useState<CabOption[]>([]);
@@ -29,18 +32,26 @@ const App: React.FC = () => {
 
   const [recentSearches, setRecentSearches] = useState<SearchParams[]>([]);
   const [bookmarkedLocations, setBookmarkedLocations] = useState<BookmarkedLocation[]>([]);
+  const [preferredCabType, setPreferredCabType] = useState<string | null>(null);
+
 
   const [pickup, setPickup] = useState('');
   const [dropoff, setDropoff] = useState('');
   const [seats, setSeats] = useState(1);
   const [searchFormKey, setSearchFormKey] = useState(Date.now());
+  const [lastSearch, setLastSearch] = useState<SearchParams | null>(null);
 
   useEffect(() => {
     try {
       const storedSearches = localStorage.getItem(RECENT_SEARCHES_STORAGE_KEY);
       if (storedSearches) setRecentSearches(JSON.parse(storedSearches));
+      
       const storedBookmarks = localStorage.getItem(BOOKMARKS_STORAGE_KEY);
       if (storedBookmarks) setBookmarkedLocations(JSON.parse(storedBookmarks));
+      
+      const storedPreference = localStorage.getItem(PREFERRED_CAB_TYPE_STORAGE_KEY);
+      if (storedPreference) setPreferredCabType(storedPreference);
+
     } catch (error) {
       console.error("Could not load data from local storage:", error);
     }
@@ -77,6 +88,7 @@ const App: React.FC = () => {
 
       setCabOptions(validCabs);
       setRouteCoordinates(locations);
+      setLastSearch({ pickup, dropoff, seats });
 
       if (validCabs.length > 0) {
         const fares = validCabs.map(c => c.fare);
@@ -97,28 +109,24 @@ const App: React.FC = () => {
     } catch (err) {
       console.error(err);
       setError("Sorry, we couldn't fetch cab details. The AI might be busy, or the locations are invalid. Please try again.");
+      setLastSearch(null);
     } finally {
       setIsLoading(false);
     }
   }, []);
   
-  const handleAddBookmark = (name: string, address: string) => {
+  const handleAddBookmark = (address: string) => {
     setBookmarkedLocations(prev => {
       const addressLower = address.trim().toLowerCase();
-      const existingBookmarkIndex = prev.findIndex(bm => bm.address.trim().toLowerCase() === addressLower);
+      const isAlreadyBookmarked = prev.some(bm => bm.address.trim().toLowerCase() === addressLower);
 
-      let updatedBookmarks;
-
-      if (existingBookmarkIndex !== -1) {
-        // Address exists, update its name
-        updatedBookmarks = [...prev];
-        const existingBookmark = updatedBookmarks[existingBookmarkIndex];
-        updatedBookmarks[existingBookmarkIndex] = { ...existingBookmark, name };
-      } else {
-        // Address is new, add it to the start of the list
-        const newBookmark: BookmarkedLocation = { id: Date.now().toString(), name, address };
-        updatedBookmarks = [newBookmark, ...prev];
+      if (isAlreadyBookmarked) {
+        return prev; // Already bookmarked, do nothing.
       }
+      
+      // Address is new, add it to the start of the list
+      const newBookmark: BookmarkedLocation = { id: Date.now().toString(), address };
+      const updatedBookmarks = [newBookmark, ...prev];
       
       localStorage.setItem(BOOKMARKS_STORAGE_KEY, JSON.stringify(updatedBookmarks));
       return updatedBookmarks;
@@ -132,6 +140,19 @@ const App: React.FC = () => {
           return updated;
       });
   };
+  
+  const handleSetPreferredCabType = (cabType: string) => {
+    setPreferredCabType(prev => {
+      const newPreference = prev === cabType ? null : cabType;
+      if (newPreference) {
+        localStorage.setItem(PREFERRED_CAB_TYPE_STORAGE_KEY, newPreference);
+      } else {
+        localStorage.removeItem(PREFERRED_CAB_TYPE_STORAGE_KEY);
+      }
+      return newPreference;
+    });
+  };
+
 
   const handleFilterChange = (filter: string) => setActiveFilter(filter);
   const handleSortChange = (newSortOrder: SortOrder) => setSortOrder(newSortOrder);
@@ -158,16 +179,25 @@ const App: React.FC = () => {
   });
 
   const sortedAndFilteredCabOptions = [...filteredCabOptions].sort((a, b) => {
+    // Primary sort: by preferred cab type
+    if (preferredCabType) {
+      const aIsPreferred = a.cabType === preferredCabType;
+      const bIsPreferred = b.cabType === preferredCabType;
+      if (aIsPreferred && !bIsPreferred) return -1;
+      if (!aIsPreferred && bIsPreferred) return 1;
+    }
+    
+    // Secondary sort: by fare
     if (sortOrder === 'fare-asc') return a.fare - b.fare;
     return b.fare - a.fare;
   });
 
   return (
     <div className="min-h-screen font-sans text-zinc-200">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-4 sm:py-8">
         <Header />
-        <main className="mt-8">
-          <div className="max-w-2xl mx-auto bg-zinc-900/50 rounded-2xl shadow-lg p-6 backdrop-blur-sm border border-zinc-800/80">
+        <main className="mt-6 sm:mt-8">
+          <div className="max-w-2xl mx-auto bg-sky-950/20 rounded-2xl shadow-lg p-4 sm:p-6 backdrop-blur-sm border border-cyan-700/50">
             <SearchForm
               key={searchFormKey}
               onSearch={handleSearch}
@@ -190,9 +220,9 @@ const App: React.FC = () => {
             </div>
           )}
 
-          <div className="mt-12">
+          <div className="mt-8 sm:mt-12">
             {!isLoading && !error && cabOptions.length > 0 && (
-              <div className="max-w-4xl mx-auto bg-black/40 rounded-xl p-6 mb-8 border border-zinc-800 space-y-6">
+              <div className="max-w-4xl mx-auto bg-black/20 rounded-xl p-4 sm:p-6 mb-8 border border-cyan-800/40 space-y-6">
                 <div>
                   <h3 className="text-lg font-semibold mb-4 text-center text-zinc-300">Refine Your Search</h3>
                    <FilterControls 
@@ -201,7 +231,7 @@ const App: React.FC = () => {
                     onFilterChange={handleFilterChange}
                   />
                 </div>
-                 <div className="grid md:grid-cols-2 gap-x-8 gap-y-6 border-t border-zinc-800 pt-6">
+                 <div className="grid md:grid-cols-2 gap-x-8 gap-y-4 md:gap-y-6 border-t border-cyan-800/40 pt-6">
                   <div>
                     <h3 className="text-base font-semibold mb-3 text-zinc-300">Filter by Fare Range</h3>
                      {fareRange && currentFareFilter && (
@@ -224,14 +254,20 @@ const App: React.FC = () => {
                 </div>
               </div>
             )}
-            <ResultsDisplay
-              cabOptions={sortedAndFilteredCabOptions}
-              totalCabCount={cabOptions.length}
-              isLoading={isLoading}
-              error={error}
-              hasSearched={hasSearched}
-              routeCoordinates={routeCoordinates}
-            />
+            {isLoading ? (
+              <Loader />
+            ) : (
+              <ResultsDisplay
+                cabOptions={sortedAndFilteredCabOptions}
+                totalCabCount={cabOptions.length}
+                error={error}
+                hasSearched={hasSearched}
+                routeCoordinates={routeCoordinates}
+                lastSearch={lastSearch}
+                preferredCabType={preferredCabType}
+                onSetPreferred={handleSetPreferredCabType}
+              />
+            )}
           </div>
         </main>
       </div>

@@ -8,7 +8,7 @@ interface RecentSearchesProps {
 
 export const RecentSearches: React.FC<RecentSearchesProps> = ({ searches, onSelect }) => {
   return (
-    <div className="bg-zinc-900/50 rounded-lg p-4 backdrop-blur-sm border border-zinc-800/80 animate-fade-in-up">
+    <div className="bg-sky-950/20 rounded-lg p-4 backdrop-blur-sm border border-cyan-700/50 animate-fade-in-up">
       <h3 className="text-sm font-semibold text-zinc-400 mb-4 flex items-center gap-2">
         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
           <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clipRule="evenodd" />
@@ -20,7 +20,7 @@ export const RecentSearches: React.FC<RecentSearchesProps> = ({ searches, onSele
           <button
             key={index}
             onClick={() => onSelect(search)}
-            className="w-full text-left p-3 bg-black/40 hover:bg-zinc-700/60 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-zinc-900 focus:ring-red-500 group transform hover:scale-[1.02] hover:border-red-600/50"
+            className="w-full text-left p-3 bg-black/40 hover:bg-zinc-700/60 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-zinc-900 focus:ring-cyan-500 group transform hover:scale-[1.02] hover:border-cyan-600/50"
             aria-label={`Search again for pickup at ${search.pickup}, dropoff at ${search.dropoff}, for ${search.seats} passengers`}
           >
             <div className="flex gap-4 items-center justify-between">
@@ -34,7 +34,7 @@ export const RecentSearches: React.FC<RecentSearchesProps> = ({ searches, onSele
                     </div>
                     <div className="w-px flex-grow bg-zinc-600 my-1"></div>
                     <div className="p-1.5 bg-zinc-700 rounded-full">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-cyan-400" viewBox="0 0 20 20" fill="currentColor">
                           <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
                         </svg>
                     </div>

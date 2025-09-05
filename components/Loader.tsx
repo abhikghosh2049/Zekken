@@ -26,8 +26,8 @@ export const Loader: React.FC = () => {
               {/* Car body, which will have the bounce animation */}
               <g style={{ animation: 'subtle-bounce 0.4s ease-in-out infinite' }}>
                   {/* Main Body */}
-                  <path d="M113 21H7C5.89543 21 5 21.8954 5 23V31C5 32.1046 5.89543 33 7 33H113C114.105 33 115 32.1046 115 31V23C115 21.8954 114.105 21 113 21Z" fill="#DC2626"/>
-                  <path d="M116 29.5L113.5 22.5C113 21.5 112 21 111 21H89L82 14H38L31 21H9C8 21 7 21.5 6.5 22.5L4 29.5H116Z" fill="#B91C1C"/>
+                  <path d="M113 21H7C5.89543 21 5 21.8954 5 23V31C5 32.1046 5.89543 33 7 33H113C114.105 33 115 32.1046 115 31V23C115 21.8954 114.105 21 113 21Z" fill="#06b6d4"/>
+                  <path d="M116 29.5L113.5 22.5C113 21.5 112 21 111 21H89L82 14H38L31 21H9C8 21 7 21.5 6.5 22.5L4 29.5H116Z" fill="#5eead4"/>
                   
                   {/* Windows */}
                   <path d="M79 15L87 21H33L41 15H79Z" fill="#111827"/>

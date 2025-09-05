@@ -15,9 +15,9 @@ const SortButton: React.FC<{
   return (
     <button
       onClick={onClick}
-      className={`w-full flex items-center justify-center gap-2 px-3 py-2 text-sm font-semibold rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black focus:ring-red-500 ${
+      className={`w-full flex items-center justify-center gap-2 px-3 py-2 text-sm font-semibold rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black focus:ring-cyan-500 ${
         isActive
-          ? 'bg-red-600 text-white shadow-sm'
+          ? 'bg-cyan-600 text-white shadow-sm'
           : 'bg-zinc-700 text-zinc-300 hover:bg-zinc-600 hover:text-white'
       }`}
       aria-pressed={isActive}

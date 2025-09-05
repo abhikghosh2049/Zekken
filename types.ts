@@ -27,6 +27,5 @@ export interface CabApiResponse {
 
 export interface BookmarkedLocation {
   id: string;
-  name: string;
   address: string;
 }
