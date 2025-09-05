@@ -134,13 +134,20 @@ export const fetchCabOptions = async (pickup: string, dropoff: string, seats: nu
 
   } catch (error) {
     console.error("Error fetching or parsing cab options:", error);
-    let errorMessage = "Failed to get a valid response from the AI model.";
-    if (error instanceof Error && error.message.includes('SAFETY')) {
-        errorMessage = "The request was blocked due to safety concerns. Please try different locations."
-    } else if (error instanceof SyntaxError) {
-        errorMessage = "The AI returned a malformed response. Please try your search again."
+    
+    const errorString = String(error);
+
+    if (errorString.includes("PERMISSION_DENIED") || errorString.includes("API key not valid")) {
+      throw new Error("Connection to the AI service failed. This may be due to an invalid or restricted API key. Please check the application's configuration.");
     }
-    throw new Error(errorMessage);
+    if (errorString.includes('SAFETY')) {
+        throw new Error("The request was blocked due to safety concerns. Please try different locations.");
+    }
+    if (error instanceof SyntaxError || errorString.includes("malformed")) {
+        throw new Error("The AI returned a malformed response. Please try your search again.");
+    }
+    
+    throw new Error("Sorry, we couldn't fetch cab details. The AI might be busy or the locations are invalid. Please try again.");
   }
 };
 

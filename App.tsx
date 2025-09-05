@@ -108,7 +108,11 @@ const App: React.FC = () => {
       }
     } catch (err) {
       console.error(err);
-      setError("Sorry, we couldn't fetch cab details. The AI might be busy, or the locations are invalid. Please try again.");
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("An unknown error occurred while fetching cab details. Please try again.");
+      }
       setLastSearch(null);
     } finally {
       setIsLoading(false);
