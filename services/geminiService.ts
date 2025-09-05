@@ -138,7 +138,7 @@ export const fetchCabOptions = async (pickup: string, dropoff: string, seats: nu
     const errorString = String(error);
 
     if (errorString.includes("PERMISSION_DENIED") || errorString.includes("API key not valid")) {
-      throw new Error("Connection to the AI service failed. This may be due to an invalid or restricted API key. Please check the application's configuration.");
+      throw new Error("There seems to be an issue with the AI service connection. Please try again later.");
     }
     if (errorString.includes('SAFETY')) {
         throw new Error("The request was blocked due to safety concerns. Please try different locations.");
